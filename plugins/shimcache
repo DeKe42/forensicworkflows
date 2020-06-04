@@ -53,10 +53,10 @@ def transform(obj):
                 LOGGER.info("Base64 encoded registry value is deprecated!")
             except ValueError:
                 LOGGER.error("Could not parse shimcache: %s", original_error)
-                return
+                return []
         parsed_cache = read_cache(cache_bin_bytes)
         if not parsed_cache:
-            return
+            return []
         for entry in parsed_cache:
             if entry not in entries:
                 control_set = obj["key"].split('\\')[2]
@@ -594,7 +594,7 @@ def read_winxp_entries(bin_data):
 
             # No size values are included in these entries, so search for utf-16 terminator.
             path_len = bin_data[offset:offset +
-                                       (MAX_PATH + 8)].find("\x00\x00")
+                                       (MAX_PATH + 8)].find(b"\x00\x00")
 
             # if path is corrupt, procede to next entry.
             if path_len == 0:
